@@ -104,7 +104,28 @@ license_type        = "evaluation"       # Required by module but ignored for Co
 install_bloom       = false             # Disable Bloom to save resources
 ```
 
-**Estimated Monthly Cost**: ~$24-30 (including storage and networking)
+### Monthly Cost Breakdown
+
+| Component | Cost | Description |
+|-----------|------|--------------|
+| **VM Instance (e2-medium)** | ~$24/month | 2 vCPU, 4GB RAM, 30GB SSD |
+| **Load Balancer** | ~$18/month | Global forwarding rules for HTTPS |
+| **SSL Certificate** | $0/month | Google-managed SSL (FREE) |
+| **Data Processing** | ~$2-5/month | Outbound traffic processing |
+| **Static IP** | ~$0.70/month | Reserved global IP address |
+| **Total with Custom Domain** | **~$44-48/month** | Professional deployment |
+| **Previous Cost (IP only)** | ~$24/month | Direct IP access |
+| **Extra Cost for Custom Domain** | **~$20-24/month** | 83-100% increase |
+
+### Cost Benefits
+
+The extra cost provides:
+- ✅ **Professional custom domain** (neo4j.paulbonneville.com)
+- ✅ **SSL/HTTPS encryption** (automatically managed)
+- ✅ **High availability** (global load balancer)
+- ✅ **Auto-scaling capability** (can handle multiple instances)
+- ✅ **HTTP to HTTPS redirects** (security best practice)
+- ✅ **Certificate auto-renewal** (no maintenance required)
 
 ## Network Security
 
@@ -257,10 +278,12 @@ The e2-medium instance provides good performance for development:
 
 To scale up if needed:
 ```hcl
-machine_type = "e2-standard-2"  # 2 vCPU, 8GB RAM (~$48/month)
+machine_type = "e2-standard-2"  # 2 vCPU, 8GB RAM (~$48/month + LB costs)
 # or
-machine_type = "n2-standard-2"  # 2 vCPU, 8GB RAM, dedicated cores (~$50/month)
+machine_type = "n2-standard-2"  # 2 vCPU, 8GB RAM, dedicated cores (~$50/month + LB costs)
 ```
+
+**Note**: Load balancer costs (~$20-24/month) are additional to VM costs when using custom domain.
 
 ## Development Workflow
 
@@ -281,11 +304,13 @@ machine_type = "n2-standard-2"  # 2 vCPU, 8GB RAM, dedicated cores (~$50/month)
 
 ### Cost Optimization Tips
 
+#### Current Deployment (~$44-48/month)
+
 1. **Use local development** for daily work to minimize cloud costs
 
 2. **Auto-stop production for development**:
    ```bash
-   # Stop VM when not needed
+   # Stop VM when not needed (saves ~$24/month)
    gcloud compute instances stop neo4j-arrgh-neo4j-1 --zone=us-central1-a
    
    # Start when needed  
@@ -297,6 +322,25 @@ machine_type = "n2-standard-2"  # 2 vCPU, 8GB RAM, dedicated cores (~$50/month)
 4. **Monitor costs** with GCP billing alerts
 
 5. **Use Community Edition** (free) for development/testing
+
+#### Future Cost Reduction Options
+
+If cost becomes a concern, consider these alternatives:
+
+| Option | Monthly Cost | Trade-offs |
+|--------|--------------|------------|
+| **Current (Custom Domain)** | ~$44-48 | Full features, professional setup |
+| **Direct IP Access** | ~$24 | No custom domain, HTTP only |
+| **Cloud DNS Only** | ~$24.40 | Custom domain, manual SSL setup |
+| **Let's Encrypt Manual** | ~$24 | Free SSL, requires maintenance |
+| **Local Development Only** | $0 | No cloud deployment |
+
+#### Long-term Cost Savings
+
+- **Reserved instances**: Up to 30% savings with 1-year commitment
+- **Sustained use discounts**: Automatic discounts for consistent usage
+- **Multi-instance scaling**: Cost per instance decreases with volume
+- **Regional optimization**: Some regions have lower costs
 
 ## Troubleshooting
 
@@ -355,7 +399,7 @@ If migrating from the previous custom deployment:
 | Feature | Previous (Custom) | Current (Official) |
 |---------|-------------------|-------------------|
 | **Reliability** | Poor (complex setup) | High (certified module) |
-| **Cost** | ~$6/month | ~$24/month |
+| **Cost** | ~$6/month | ~$44-48/month |
 | **Maintenance** | High (custom scripts) | Low (official support) |
 | **Features** | Community Edition | Community Edition (Docker) |
 | **Scalability** | Limited | Full cluster support |
