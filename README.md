@@ -24,7 +24,9 @@ This project deploys Neo4j Community Edition on Google Cloud Platform using Dock
 
 - Google Cloud SDK (`gcloud`) installed and authenticated
 - Terraform >= 1.2.0 installed
+- Docker installed (for local development)
 - GCP project with billing enabled and appropriate permissions
+- Environment variables configured (copy `.env.example` to `.env`)
 
 ## Quick Start
 
@@ -53,27 +55,35 @@ open http://localhost:7474
 
 For production deployment on Google Cloud Platform:
 
-1. **Navigate to the official deployment directory**:
+1. **Ensure environment is configured**:
+   ```bash
+   # Copy and configure environment variables
+   cp .env.example .env
+   # Edit .env with your GCP project details
+   ```
+
+2. **Navigate to the official deployment directory**:
    ```bash
    cd neo4j-official
    ```
 
-2. **Configure your deployment**:
+3. **Configure your deployment**:
    ```bash
    cp terraform.tfvars.example terraform.tfvars
    # Edit terraform.tfvars with your settings (already configured for cost optimization)
    ```
 
-3. **Deploy Neo4j**:
+4. **Deploy Neo4j**:
    ```bash
    terraform init
    terraform apply
    ```
 
-4. **Access Neo4j**:
+5. **Update .env with production IP**:
    ```bash
-   # Get connection info
-   terraform output
+   # Get the deployed IP and update .env
+   terraform output neo4j_ip_addresses
+   # Update NEO4J_URI_PROD and NEO4J_HTTP_PROD in .env
    ```
 
 **Production Links:**
@@ -187,27 +197,50 @@ terraform output neo4j_ip_addresses # VM IP addresses
 
 ## Integration with arrgh-fastapi
 
-### Local Development Configuration
+### Environment Configuration
 
-Update your `arrgh-fastapi` configuration for local development:
+All authentication credentials and configuration are managed through environment variables:
 
-```python
-# In your .env.local file
-NEO4J_URI=bolt://localhost:7687
-NEO4J_USER=neo4j
-NEO4J_PASSWORD=devpassword
-```
+1. **Copy the example environment file**:
+   ```bash
+   cp .env.example .env
+   ```
 
-### Production Configuration
+2. **Update the .env file** with your specific values:
+   ```bash
+   # Neo4j Configuration
+   NEO4J_AUTH=neo4j/YOUR_SECURE_PASSWORD
+   NEO4J_PASSWORD=YOUR_SECURE_PASSWORD
+   NEO4J_USERNAME=neo4j
+   
+   # Local Development
+   NEO4J_URI_LOCAL=bolt://localhost:7687
+   NEO4J_HTTP_LOCAL=http://localhost:7474
+   NEO4J_PASSWORD_LOCAL=devpassword
+   
+   # Production
+   NEO4J_URI_PROD=bolt://34.63.143.68:7687
+   NEO4J_HTTP_PROD=http://34.63.143.68:7474
+   NEO4J_PASSWORD_PROD=SecureNeo4jPass123!
+   
+   # GCP Configuration
+   GCP_PROJECT_ID=your-project-id
+   GCP_ZONE=us-central1-a
+   GCP_DEPLOYMENT_NAME=your-deployment-name
+   ```
 
-Update your `arrgh-fastapi` configuration for production:
-
-```python
-# In your .env.production file
-NEO4J_URI=bolt://34.63.143.68:7687
-NEO4J_USER=neo4j
-NEO4J_PASSWORD=SecureNeo4jPass123!
-```
+3. **For arrgh-fastapi integration**, use the appropriate environment variables:
+   ```python
+   # Local development
+   NEO4J_URI = os.getenv('NEO4J_URI_LOCAL')
+   NEO4J_USER = os.getenv('NEO4J_USERNAME')
+   NEO4J_PASSWORD = os.getenv('NEO4J_PASSWORD_LOCAL')
+   
+   # Production
+   NEO4J_URI = os.getenv('NEO4J_URI_PROD')
+   NEO4J_USER = os.getenv('NEO4J_USERNAME')
+   NEO4J_PASSWORD = os.getenv('NEO4J_PASSWORD_PROD')
+   ```
 
 ## Performance Tuning
 
@@ -327,6 +360,28 @@ This deployment uses the official Neo4j Partners Terraform module. For improveme
 1. Submit issues to: https://github.com/neo4j-partners/gcp-marketplace-tf
 2. Test changes in a separate GCP project
 3. Update documentation when configuration changes
+
+## Environment Variables Reference
+
+All configuration is managed through the `.env` file. Key variables include:
+
+### Neo4j Credentials
+- `NEO4J_USERNAME` - Neo4j username (default: neo4j)
+- `NEO4J_PASSWORD` - Production password
+- `NEO4J_PASSWORD_LOCAL` - Local development password
+- `NEO4J_PASSWORD_PROD` - Production password
+
+### Connection URIs
+- `NEO4J_URI_LOCAL` - Local Bolt connection
+- `NEO4J_URI_PROD` - Production Bolt connection
+- `NEO4J_HTTP_LOCAL` - Local HTTP connection
+- `NEO4J_HTTP_PROD` - Production HTTP connection
+
+### GCP Configuration
+- `GCP_PROJECT_ID` - Your GCP project ID
+- `GCP_ZONE` - Deployment zone
+- `GCP_DEPLOYMENT_NAME` - Deployment name
+- `VM_NAME` - VM instance name
 
 ## Quick Access Links
 
