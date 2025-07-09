@@ -1,22 +1,24 @@
-# Neo4j Enterprise Edition on Google Cloud Platform
+# Neo4j Community Edition on Google Cloud Platform
 
-This project deploys Neo4j Enterprise Edition on Google Cloud Platform using the official Neo4j Terraform module. It provides a reliable, cost-optimized deployment that's perfect for development and testing environments.
+This project deploys Neo4j Community Edition on Google Cloud Platform using Docker and the official Neo4j Terraform module. It provides a reliable, cost-optimized deployment that's perfect for development and testing environments.
 
 ## Overview
 
 - **VM Type**: e2-medium (2 vCPU, 4GB RAM) - Cost optimized at ~$24/month
 - **Storage**: 30GB SSD persistent disk + 20GB SSD boot disk
-- **Neo4j Version**: 2025.06.0 Enterprise Edition (Evaluation License)
-- **Deployment**: Official Neo4j Partners Terraform module
+- **Neo4j Version**: 2025.06.0 Community Edition (Docker-based)
+- **Deployment**: Official Neo4j Partners Terraform module with Docker
 - **Network**: Dedicated VPC with proper security configuration
+- **Container**: Docker-based deployment for easy management and updates
 
 ## Key Benefits
 
 ✅ **Reliable**: Uses official Neo4j-certified Terraform module  
 ✅ **Cost-Effective**: 4x current cost but 24x more reliable than custom deployment  
-✅ **Enterprise Features**: Neo4j Enterprise with evaluation license  
+✅ **Latest Version**: Neo4j Community Edition 2025.06.0 via Docker  
 ✅ **Professional Setup**: GCP Marketplace certified deployment  
-✅ **Scalable**: Can easily scale to clusters when needed  
+✅ **Easy Management**: Docker-based deployment with automatic startup
+✅ **Always Current**: Uses latest Neo4j images from Docker Hub  
 
 ## Prerequisites
 
@@ -62,7 +64,7 @@ Our deployment is configured for maximum cost efficiency:
 node_count          = 1                  # Single node deployment
 machine_type        = "e2-medium"        # 2 vCPU, 4GB RAM (~$24/month)
 disk_size           = 30                 # Reduced from 100GB to 30GB
-license_type        = "evaluation"       # Use evaluation license for cost savings
+license_type        = "evaluation"       # Required by module but ignored for Community
 install_bloom       = false             # Disable Bloom to save resources
 ```
 
@@ -101,11 +103,14 @@ terraform destroy
 # SSH into Neo4j VM
 gcloud compute ssh neo4j-arrgh-neo4j-1 --zone=us-central1-a
 
-# Check Neo4j service status
-gcloud compute ssh neo4j-arrgh-neo4j-1 --zone=us-central1-a --command="sudo systemctl status neo4j"
+# Check Docker container status
+gcloud compute ssh neo4j-arrgh-neo4j-1 --zone=us-central1-a --command="sudo docker ps"
 
-# View Neo4j logs
-gcloud compute ssh neo4j-arrgh-neo4j-1 --zone=us-central1-a --command="sudo journalctl -u neo4j.service -f"
+# Check Neo4j Docker service status
+gcloud compute ssh neo4j-arrgh-neo4j-1 --zone=us-central1-a --command="sudo systemctl status neo4j-docker"
+
+# View Neo4j container logs
+gcloud compute ssh neo4j-arrgh-neo4j-1 --zone=us-central1-a --command="sudo docker logs neo4j-community"
 ```
 
 ## Connection Information
@@ -140,7 +145,7 @@ NEO4J_PASSWORD=SecureNeo4jPass123!
 
 The e2-medium instance provides good performance for development:
 
-- **Memory**: 4GB RAM (adequate for Neo4j Enterprise)
+- **Memory**: 4GB RAM (adequate for Neo4j Community Edition)
 - **CPU**: 2 vCPU shared cores (sufficient for moderate workloads) 
 - **Storage**: SSD persistent disk for better I/O performance
 
@@ -166,7 +171,7 @@ machine_type = "n2-standard-2"  # 2 vCPU, 8GB RAM, dedicated cores (~$50/month)
 
 3. **Monitor costs** with GCP billing alerts
 
-4. **Use evaluation license** (included) for development/testing
+4. **Use Community Edition** (free) for development/testing
 
 ## Troubleshooting
 
@@ -206,7 +211,7 @@ If migrating from the previous custom deployment:
 | **Reliability** | Poor (complex setup) | High (certified module) |
 | **Cost** | ~$6/month | ~$24/month |
 | **Maintenance** | High (custom scripts) | Low (official support) |
-| **Features** | Community Edition | Enterprise Edition |
+| **Features** | Community Edition | Community Edition (Docker) |
 | **Scalability** | Limited | Full cluster support |
 | **Startup Time** | 6+ minutes | ~2 minutes |
 
@@ -221,7 +226,8 @@ This deployment uses the official Neo4j Partners Terraform module. For improveme
 ## Support
 
 For deployment issues:
-1. Check Neo4j service logs: `sudo journalctl -u neo4j.service`
-2. Verify network connectivity and firewall rules
-3. Consult Neo4j documentation: https://neo4j.com/docs/
-4. Official Terraform module: https://github.com/neo4j-partners/gcp-marketplace-tf
+1. Check Neo4j container logs: `sudo docker logs neo4j-community`
+2. Check Docker service logs: `sudo journalctl -u neo4j-docker.service`
+3. Verify network connectivity and firewall rules
+4. Consult Neo4j documentation: https://neo4j.com/docs/
+5. Official Terraform module: https://github.com/neo4j-partners/gcp-marketplace-tf
