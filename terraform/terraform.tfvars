@@ -1,0 +1,16 @@
+# Required variables
+project_id = "paulbonneville-com"
+neo4j_password = "SecureNeo4jPass123!"
+
+# Optional variables (uncomment to customize)
+# region = "us-central1"
+# zone = "us-central1-a"
+# vm_name = "arrgh-neo4j"
+# machine_type = "e2-micro"
+# disk_size = 30
+# disk_type = "pd-standard"
+# enable_monitoring = true
+
+# Network configuration
+# allow_source_ranges = ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]  # Private networks only
+# network_tags = ["neo4j-server"]
