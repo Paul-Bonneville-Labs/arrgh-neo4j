@@ -132,6 +132,7 @@ if [ "$1" = "--export" ]; then
     echo "export NEO4J_HTTP_LOCAL='http://localhost:7474'"
     echo "export NEO4J_URI_PROD='bolt://${NEO4J_PROD_IP}:7687'"
     echo "export NEO4J_HTTP_PROD='http://${NEO4J_PROD_IP}:7474'"
+    echo "export NEO4J_CUSTOM_DOMAIN_URL='https://${NEO4J_CUSTOM_DOMAIN}'"
     exit 0
 fi
 

@@ -331,7 +331,10 @@ curl -v http://localhost:7474
 # Check VM status
 gcloud compute instances describe neo4j-arrgh-neo4j-1 --zone=us-central1-a
 
-# Test connectivity
+# Test connectivity (custom domain)
+curl -v https://neo4j.paulbonneville.com
+
+# Test connectivity (direct IP)
 curl -v http://YOUR_PROD_IP:7474
 
 # Check ports
@@ -396,7 +399,8 @@ All configuration is managed through the `.env` file. Key variables include:
 - 🐳 **Docker Hub**: [https://hub.docker.com/_/neo4j](https://hub.docker.com/_/neo4j)
 
 ### Production
-- 🌐 **Neo4j Browser**: [http://YOUR_PROD_IP:7474](http://YOUR_PROD_IP:7474)
+- 🌐 **Neo4j Browser**: https://neo4j.paulbonneville.com (custom domain)
+- 🌐 **Neo4j Browser (IP)**: http://YOUR_PROD_IP:7474 (direct IP access)
 - ☁️ **GCP Console**: [https://console.cloud.google.com/compute/instances](https://console.cloud.google.com/compute/instances)
 - 🏗️ **Terraform Module**: [https://github.com/neo4j-partners/gcp-marketplace-tf](https://github.com/neo4j-partners/gcp-marketplace-tf)
 
