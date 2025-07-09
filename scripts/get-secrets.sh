@@ -62,6 +62,7 @@ main() {
     NEO4J_LOCAL_PASSWORD=$(get_secret "neo4j-local-password")
     GCP_PROJECT_ID=$(get_secret "gcp-project-id")
     NEO4J_PROD_IP=$(get_secret "neo4j-prod-ip")
+    ALERT_EMAIL=$(get_secret "alert-email")
     
     # Export as environment variables
     export NEO4J_USERNAME
@@ -69,6 +70,7 @@ main() {
     export NEO4J_LOCAL_PASSWORD
     export GCP_PROJECT_ID
     export NEO4J_PROD_IP
+    export ALERT_EMAIL
     
     # Generate connection URIs
     export NEO4J_URI_LOCAL="bolt://localhost:7687"
@@ -85,6 +87,7 @@ main() {
     echo "  NEO4J_LOCAL_PASSWORD=[HIDDEN]"
     echo "  GCP_PROJECT_ID=$GCP_PROJECT_ID"
     echo "  NEO4J_PROD_IP=$NEO4J_PROD_IP"
+    echo "  ALERT_EMAIL=$ALERT_EMAIL"
     echo "  NEO4J_URI_LOCAL=$NEO4J_URI_LOCAL"
     echo "  NEO4J_HTTP_LOCAL=$NEO4J_HTTP_LOCAL"
     echo "  NEO4J_URI_PROD=$NEO4J_URI_PROD"
@@ -117,12 +120,14 @@ if [ "$1" = "--export" ]; then
     NEO4J_LOCAL_PASSWORD=$(get_secret "neo4j-local-password")
     GCP_PROJECT_ID=$(get_secret "gcp-project-id")
     NEO4J_PROD_IP=$(get_secret "neo4j-prod-ip")
+    ALERT_EMAIL=$(get_secret "alert-email")
     
     echo "export NEO4J_USERNAME='$NEO4J_USERNAME'"
     echo "export NEO4J_PASSWORD='$NEO4J_PASSWORD'"
     echo "export NEO4J_LOCAL_PASSWORD='$NEO4J_LOCAL_PASSWORD'"
     echo "export GCP_PROJECT_ID='$GCP_PROJECT_ID'"
     echo "export NEO4J_PROD_IP='$NEO4J_PROD_IP'"
+    echo "export ALERT_EMAIL='$ALERT_EMAIL'"
     echo "export NEO4J_URI_LOCAL='bolt://localhost:7687'"
     echo "export NEO4J_HTTP_LOCAL='http://localhost:7474'"
     echo "export NEO4J_URI_PROD='bolt://${NEO4J_PROD_IP}:7687'"

@@ -19,11 +19,12 @@ The following secrets are automatically created and managed:
 - `neo4j-local-password` - Local development password (devpassword)
 - `gcp-project-id` - GCP project ID
 - `neo4j-prod-ip` - Production Neo4j IP address
+- `alert-email` - Email address for monitoring alerts
 
 ### 3. List Secrets
 
 ```bash
-gcloud secrets list --filter="name:neo4j OR name:gcp-project-id"
+gcloud secrets list --filter="name:neo4j OR name:gcp-project-id OR name:alert-email"
 ```
 
 ### 4. Access Secrets
@@ -153,6 +154,7 @@ NEO4J_PASSWORD=[from neo4j-password secret]
 NEO4J_LOCAL_PASSWORD=devpassword
 GCP_PROJECT_ID=[from gcp-project-id secret]
 NEO4J_PROD_IP=[from neo4j-prod-ip secret]
+ALERT_EMAIL=[from alert-email secret]
 NEO4J_URI_LOCAL=bolt://localhost:7687
 NEO4J_HTTP_LOCAL=http://localhost:7474
 NEO4J_URI_PROD=bolt://[prod-ip]:7687
