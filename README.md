@@ -87,9 +87,9 @@ For production deployment on Google Cloud Platform:
    ```
 
 **Production Links:**
-- 🌐 **Neo4j Browser**: http://34.63.143.68:7474
-- 🔌 **Bolt Connection**: bolt://34.63.143.68:7687
-- 👤 **Credentials**: neo4j/SecureNeo4jPass123!
+- 🌐 **Neo4j Browser**: http://YOUR_PROD_IP:7474
+- 🔌 **Bolt Connection**: bolt://YOUR_PROD_IP:7687
+- 👤 **Credentials**: neo4j/RETRIEVED_FROM_SECRET_MANAGER
 
 ## Cost-Optimized Configuration
 
@@ -190,10 +190,10 @@ terraform output neo4j_bolt_url     # Bolt connection for drivers
 terraform output neo4j_ip_addresses # VM IP addresses
 ```
 
-- 🌐 **Neo4j Browser**: [http://34.63.143.68:7474](http://34.63.143.68:7474)
-- 🔌 **Bolt Connection**: `bolt://34.63.143.68:7687`
+- 🌐 **Neo4j Browser**: [http://YOUR_PROD_IP:7474](http://YOUR_PROD_IP:7474)
+- 🔌 **Bolt Connection**: `bolt://YOUR_PROD_IP:7687`
 - 👤 **Username**: `neo4j`
-- 🔑 **Password**: `SecureNeo4jPass123!`
+- 🔑 **Password**: `RETRIEVED_FROM_SECRET_MANAGER`
 
 ## Integration with arrgh-fastapi
 
@@ -219,9 +219,9 @@ All authentication credentials and configuration are managed through environment
    NEO4J_PASSWORD_LOCAL=devpassword
    
    # Production
-   NEO4J_URI_PROD=bolt://34.63.143.68:7687
-   NEO4J_HTTP_PROD=http://34.63.143.68:7474
-   NEO4J_PASSWORD_PROD=SecureNeo4jPass123!
+   NEO4J_URI_PROD=bolt://YOUR_PROD_IP:7687
+   NEO4J_HTTP_PROD=http://YOUR_PROD_IP:7474
+   NEO4J_PASSWORD_PROD=RETRIEVED_FROM_SECRET_MANAGER
    
    # GCP Configuration
    GCP_PROJECT_ID=your-project-id
@@ -327,7 +327,7 @@ curl -v http://localhost:7474
 gcloud compute instances describe neo4j-arrgh-neo4j-1 --zone=us-central1-a
 
 # Test connectivity
-curl -v http://34.63.143.68:7474
+curl -v http://YOUR_PROD_IP:7474
 
 # Check ports
 gcloud compute ssh neo4j-arrgh-neo4j-1 --zone=us-central1-a --command="sudo ss -tlnp | grep -E ':(7474|7687)'"
@@ -391,7 +391,7 @@ All configuration is managed through the `.env` file. Key variables include:
 - 🐳 **Docker Hub**: [https://hub.docker.com/_/neo4j](https://hub.docker.com/_/neo4j)
 
 ### Production
-- 🌐 **Neo4j Browser**: [http://34.63.143.68:7474](http://34.63.143.68:7474)
+- 🌐 **Neo4j Browser**: [http://YOUR_PROD_IP:7474](http://YOUR_PROD_IP:7474)
 - ☁️ **GCP Console**: [https://console.cloud.google.com/compute/instances](https://console.cloud.google.com/compute/instances)
 - 🏗️ **Terraform Module**: [https://github.com/neo4j-partners/gcp-marketplace-tf](https://github.com/neo4j-partners/gcp-marketplace-tf)
 
