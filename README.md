@@ -104,28 +104,12 @@ license_type        = "evaluation"       # Required by module but ignored for Co
 install_bloom       = false             # Disable Bloom to save resources
 ```
 
-### Monthly Cost Breakdown
+### Monthly Cost
 
 | Component | Cost | Description |
 |-----------|------|--------------|
 | **VM Instance (e2-medium)** | ~$24/month | 2 vCPU, 4GB RAM, 30GB SSD |
-| **Load Balancer** | ~$18/month | Global forwarding rules for HTTPS |
-| **SSL Certificate** | $0/month | Google-managed SSL (FREE) |
-| **Data Processing** | ~$2-5/month | Outbound traffic processing |
-| **Static IP** | ~$0.70/month | Reserved global IP address |
-| **Total with Custom Domain** | **~$44-48/month** | Professional deployment |
-| **Previous Cost (IP only)** | ~$24/month | Direct IP access |
-| **Extra Cost for Custom Domain** | **~$20-24/month** | 83-100% increase |
-
-### Cost Benefits
-
-The extra cost provides:
-- ✅ **Professional custom domain** (neo4j.paulbonneville.com)
-- ✅ **SSL/HTTPS encryption** (automatically managed)
-- ✅ **High availability** (global load balancer)
-- ✅ **Auto-scaling capability** (can handle multiple instances)
-- ✅ **HTTP to HTTPS redirects** (security best practice)
-- ✅ **Certificate auto-renewal** (no maintenance required)
+| **Total** | **~$24/month** | Simple direct access deployment |
 
 ## Network Security
 
@@ -211,8 +195,8 @@ terraform output neo4j_bolt_url     # Bolt connection for drivers
 terraform output neo4j_ip_addresses # VM IP addresses
 ```
 
-- 🌐 **Neo4j Browser**: [http://YOUR_PROD_IP:7474](http://YOUR_PROD_IP:7474)
-- 🔌 **Bolt Connection**: `bolt://YOUR_PROD_IP:7687`
+- 🌐 **Neo4j Browser**: http://YOUR_INSTANCE_IP:7474
+- 🔌 **Bolt Connection**: `bolt://YOUR_INSTANCE_IP:7687`
 - 👤 **Username**: `neo4j`
 - 🔑 **Password**: `RETRIEVED_FROM_SECRET_MANAGER`
 
@@ -245,8 +229,8 @@ All authentication credentials and configuration are managed through environment
    NEO4J_PASSWORD_LOCAL=devpassword
    
    # Production
-   NEO4J_URI_PROD=bolt://34.63.143.68:7687
-   NEO4J_HTTP_PROD=http://34.63.143.68:7474
+   NEO4J_URI_PROD=bolt://YOUR_INSTANCE_IP:7687
+   NEO4J_HTTP_PROD=http://YOUR_INSTANCE_IP:7474
    NEO4J_PASSWORD_PROD=Neo4jSecure57bd68a3f6a61bce93bd78ce!
    
    # GCP Configuration
@@ -278,12 +262,11 @@ The e2-medium instance provides good performance for development:
 
 To scale up if needed:
 ```hcl
-machine_type = "e2-standard-2"  # 2 vCPU, 8GB RAM (~$48/month + LB costs)
+machine_type = "e2-standard-2"  # 2 vCPU, 8GB RAM (~$48/month)
 # or
-machine_type = "n2-standard-2"  # 2 vCPU, 8GB RAM, dedicated cores (~$50/month + LB costs)
+machine_type = "n2-standard-2"  # 2 vCPU, 8GB RAM, dedicated cores (~$50/month)
 ```
 
-**Note**: Load balancer costs (~$20-24/month) are additional to VM costs when using custom domain.
 
 ## Development Workflow
 
@@ -304,7 +287,7 @@ machine_type = "n2-standard-2"  # 2 vCPU, 8GB RAM, dedicated cores (~$50/month +
 
 ### Cost Optimization Tips
 
-#### Current Deployment (~$44-48/month)
+#### Current Deployment (~$24/month)
 
 1. **Use local development** for daily work to minimize cloud costs
 
@@ -323,24 +306,12 @@ machine_type = "n2-standard-2"  # 2 vCPU, 8GB RAM, dedicated cores (~$50/month +
 
 5. **Use Community Edition** (free) for development/testing
 
-#### Future Cost Reduction Options
-
-If cost becomes a concern, consider these alternatives:
-
-| Option | Monthly Cost | Trade-offs |
-|--------|--------------|------------|
-| **Current (Custom Domain)** | ~$44-48 | Full features, professional setup |
-| **Direct IP Access** | ~$24 | No custom domain, HTTP only |
-| **Cloud DNS Only** | ~$24.40 | Custom domain, manual SSL setup |
-| **Let's Encrypt Manual** | ~$24 | Free SSL, requires maintenance |
-| **Local Development Only** | $0 | No cloud deployment |
-
-#### Long-term Cost Savings
+#### Future Cost Savings Options
 
 - **Reserved instances**: Up to 30% savings with 1-year commitment
 - **Sustained use discounts**: Automatic discounts for consistent usage
-- **Multi-instance scaling**: Cost per instance decreases with volume
-- **Regional optimization**: Some regions have lower costs
+- **Smaller instance types**: Use e2-micro (~$6/month) for testing
+- **Auto-stop schedules**: Stop instance during non-business hours
 
 ## Troubleshooting
 
@@ -375,11 +346,8 @@ curl -v http://localhost:7474
 # Check VM status
 gcloud compute instances describe neo4j-arrgh-neo4j-1 --zone=us-central1-a
 
-# Test connectivity (custom domain)
-curl -v https://neo4j.paulbonneville.com
-
-# Test connectivity (direct IP)
-curl -v http://YOUR_PROD_IP:7474
+# Test connectivity
+curl -v http://YOUR_INSTANCE_IP:7474
 
 # Check ports
 gcloud compute ssh neo4j-arrgh-neo4j-1 --zone=us-central1-a --command="sudo ss -tlnp | grep -E ':(7474|7687)'"
@@ -399,7 +367,7 @@ If migrating from the previous custom deployment:
 | Feature | Previous (Custom) | Current (Official) |
 |---------|-------------------|-------------------|
 | **Reliability** | Poor (complex setup) | High (certified module) |
-| **Cost** | ~$6/month | ~$44-48/month |
+| **Cost** | ~$6/month | ~$24/month |
 | **Maintenance** | High (custom scripts) | Low (official support) |
 | **Features** | Community Edition | Community Edition (Docker) |
 | **Scalability** | Limited | Full cluster support |
@@ -443,8 +411,7 @@ All configuration is managed through the `.env` file. Key variables include:
 - 🐳 **Docker Hub**: [https://hub.docker.com/_/neo4j](https://hub.docker.com/_/neo4j)
 
 ### Production
-- 🌐 **Neo4j Browser**: https://neo4j.paulbonneville.com (custom domain)
-- 🌐 **Neo4j Browser (IP)**: http://YOUR_PROD_IP:7474 (direct IP access)
+- 🌐 **Neo4j Browser**: http://YOUR_INSTANCE_IP:7474
 - ☁️ **GCP Console**: [https://console.cloud.google.com/compute/instances](https://console.cloud.google.com/compute/instances)
 - 🏗️ **Terraform Module**: [https://github.com/neo4j-partners/gcp-marketplace-tf](https://github.com/neo4j-partners/gcp-marketplace-tf)
 
