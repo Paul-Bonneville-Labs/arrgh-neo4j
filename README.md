@@ -28,6 +28,31 @@ This project deploys Neo4j Community Edition on Google Cloud Platform using Dock
 
 ## Quick Start
 
+### Local Development
+
+For local development, you can run Neo4j using Docker Compose:
+
+```bash
+# Start Neo4j locally
+docker run -d \
+  --name neo4j-dev \
+  -p 7474:7474 -p 7687:7687 \
+  -e NEO4J_AUTH=neo4j/devpassword \
+  neo4j:2025.06.0
+
+# Access Neo4j Browser locally
+open http://localhost:7474
+```
+
+**Local Development Links:**
+- 🌐 **Neo4j Browser**: http://localhost:7474
+- 🔌 **Bolt Connection**: bolt://localhost:7687
+- 👤 **Credentials**: neo4j/devpassword
+
+### Production Deployment on GCP
+
+For production deployment on Google Cloud Platform:
+
 1. **Navigate to the official deployment directory**:
    ```bash
    cd neo4j-official
@@ -49,11 +74,12 @@ This project deploys Neo4j Community Edition on Google Cloud Platform using Dock
    ```bash
    # Get connection info
    terraform output
-   
-   # Neo4j Browser: http://YOUR_VM_IP:7474
-   # Username: neo4j
-   # Password: SecureNeo4jPass123!
    ```
+
+**Production Links:**
+- 🌐 **Neo4j Browser**: http://34.63.143.68:7474
+- 🔌 **Bolt Connection**: bolt://34.63.143.68:7687
+- 👤 **Credentials**: neo4j/SecureNeo4jPass123!
 
 ## Cost-Optimized Configuration
 
@@ -85,7 +111,28 @@ firewall_source_range = "YOUR_IP_RANGE/24"
 
 ## Management Commands
 
-### Terraform Operations
+### Local Development
+
+```bash
+# Start Neo4j locally
+docker run -d --name neo4j-dev -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo4j/devpassword neo4j:2025.06.0
+
+# Stop Neo4j
+docker stop neo4j-dev
+
+# Start existing container
+docker start neo4j-dev
+
+# View logs
+docker logs neo4j-dev
+
+# Remove container
+docker rm neo4j-dev
+```
+
+### Production Deployment
+
+#### Terraform Operations
 ```bash
 # Check status
 terraform output
@@ -98,7 +145,7 @@ terraform apply
 terraform destroy
 ```
 
-### VM Management
+#### VM Management
 ```bash
 # SSH into Neo4j VM
 gcloud compute ssh neo4j-arrgh-neo4j-1 --zone=us-central1-a
@@ -115,6 +162,15 @@ gcloud compute ssh neo4j-arrgh-neo4j-1 --zone=us-central1-a --command="sudo dock
 
 ## Connection Information
 
+### Local Development
+
+- 🌐 **Neo4j Browser**: [http://localhost:7474](http://localhost:7474)
+- 🔌 **Bolt Connection**: `bolt://localhost:7687`
+- 👤 **Username**: `neo4j`
+- 🔑 **Password**: `devpassword`
+
+### Production Deployment
+
 After deployment, use these connection details:
 
 ```bash
@@ -124,19 +180,31 @@ terraform output neo4j_bolt_url     # Bolt connection for drivers
 terraform output neo4j_ip_addresses # VM IP addresses
 ```
 
-Example connection strings:
-- **Browser**: `http://34.121.58.214:7474`
-- **Bolt**: `bolt://34.121.58.214:7687`
-- **Username**: `neo4j`
-- **Password**: `SecureNeo4jPass123!`
+- 🌐 **Neo4j Browser**: [http://34.63.143.68:7474](http://34.63.143.68:7474)
+- 🔌 **Bolt Connection**: `bolt://34.63.143.68:7687`
+- 👤 **Username**: `neo4j`
+- 🔑 **Password**: `SecureNeo4jPass123!`
 
 ## Integration with arrgh-fastapi
 
-Update your `arrgh-fastapi` configuration:
+### Local Development Configuration
+
+Update your `arrgh-fastapi` configuration for local development:
 
 ```python
 # In your .env.local file
-NEO4J_URI=bolt://34.121.58.214:7687
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=devpassword
+```
+
+### Production Configuration
+
+Update your `arrgh-fastapi` configuration for production:
+
+```python
+# In your .env.production file
+NEO4J_URI=bolt://34.63.143.68:7687
 NEO4J_USER=neo4j
 NEO4J_PASSWORD=SecureNeo4jPass123!
 ```
@@ -156,9 +224,28 @@ machine_type = "e2-standard-2"  # 2 vCPU, 8GB RAM (~$48/month)
 machine_type = "n2-standard-2"  # 2 vCPU, 8GB RAM, dedicated cores (~$50/month)
 ```
 
-## Cost Optimization Tips
+## Development Workflow
 
-1. **Auto-stop for development**:
+### Local Development
+
+1. **Start with local Neo4j** for development:
+   ```bash
+   docker run -d --name neo4j-dev -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo4j/devpassword neo4j:2025.06.0
+   ```
+
+2. **Develop and test** using [http://localhost:7474](http://localhost:7474)
+
+3. **Deploy to production** when ready:
+   ```bash
+   cd neo4j-official
+   terraform apply
+   ```
+
+### Cost Optimization Tips
+
+1. **Use local development** for daily work to minimize cloud costs
+
+2. **Auto-stop production for development**:
    ```bash
    # Stop VM when not needed
    gcloud compute instances stop neo4j-arrgh-neo4j-1 --zone=us-central1-a
@@ -167,15 +254,22 @@ machine_type = "n2-standard-2"  # 2 vCPU, 8GB RAM, dedicated cores (~$50/month)
    gcloud compute instances start neo4j-arrgh-neo4j-1 --zone=us-central1-a
    ```
 
-2. **Schedule start/stop** with Cloud Scheduler for regular dev work
+3. **Schedule start/stop** with Cloud Scheduler for regular dev work
 
-3. **Monitor costs** with GCP billing alerts
+4. **Monitor costs** with GCP billing alerts
 
-4. **Use Community Edition** (free) for development/testing
+5. **Use Community Edition** (free) for development/testing
 
 ## Troubleshooting
 
-### Common Issues
+### Local Development Issues
+
+1. **Port conflicts**: Ensure ports 7474 and 7687 are available
+2. **Container won't start**: Check Docker is running and has sufficient resources
+3. **Can't connect**: Verify container is running with `docker ps`
+4. **Data persistence**: Use Docker volumes for persistent data
+
+### Production Issues
 
 1. **Authentication errors**: Ensure `gcloud auth application-default login` is run
 2. **Terraform fails**: Check GCP project permissions and billing status
@@ -184,12 +278,23 @@ machine_type = "n2-standard-2"  # 2 vCPU, 8GB RAM, dedicated cores (~$50/month)
 
 ### Debug Commands
 
+#### Local Development
+```bash
+# Check container status
+docker ps
+docker logs neo4j-dev
+
+# Test connectivity
+curl -v http://localhost:7474
+```
+
+#### Production
 ```bash
 # Check VM status
 gcloud compute instances describe neo4j-arrgh-neo4j-1 --zone=us-central1-a
 
 # Test connectivity
-curl -v http://YOUR_VM_IP:7474
+curl -v http://34.63.143.68:7474
 
 # Check ports
 gcloud compute ssh neo4j-arrgh-neo4j-1 --zone=us-central1-a --command="sudo ss -tlnp | grep -E ':(7474|7687)'"
@@ -223,9 +328,28 @@ This deployment uses the official Neo4j Partners Terraform module. For improveme
 2. Test changes in a separate GCP project
 3. Update documentation when configuration changes
 
+## Quick Access Links
+
+### Local Development
+- 🌐 **Neo4j Browser**: [http://localhost:7474](http://localhost:7474)
+- 📚 **Neo4j Documentation**: [https://neo4j.com/docs/](https://neo4j.com/docs/)
+- 🐳 **Docker Hub**: [https://hub.docker.com/_/neo4j](https://hub.docker.com/_/neo4j)
+
+### Production
+- 🌐 **Neo4j Browser**: [http://34.63.143.68:7474](http://34.63.143.68:7474)
+- ☁️ **GCP Console**: [https://console.cloud.google.com/compute/instances](https://console.cloud.google.com/compute/instances)
+- 🏗️ **Terraform Module**: [https://github.com/neo4j-partners/gcp-marketplace-tf](https://github.com/neo4j-partners/gcp-marketplace-tf)
+
 ## Support
 
 For deployment issues:
+
+### Local Development
+1. Check container logs: `docker logs neo4j-dev`
+2. Verify ports are available: `lsof -i :7474 -i :7687`
+3. Restart Docker service if needed
+
+### Production
 1. Check Neo4j container logs: `sudo docker logs neo4j-community`
 2. Check Docker service logs: `sudo journalctl -u neo4j-docker.service`
 3. Verify network connectivity and firewall rules
