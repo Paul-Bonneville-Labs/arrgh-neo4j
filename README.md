@@ -206,7 +206,12 @@ All authentication credentials and configuration are managed through environment
    cp .env.example .env
    ```
 
-2. **Update the .env file** with your specific values:
+2. **Update .env with actual values from Secret Manager**:
+   ```bash
+   ./scripts/update-env.sh
+   ```
+
+3. **Verify the .env file** contains actual values (not placeholders):
    ```bash
    # Neo4j Configuration
    NEO4J_AUTH=neo4j/YOUR_SECURE_PASSWORD
@@ -219,9 +224,9 @@ All authentication credentials and configuration are managed through environment
    NEO4J_PASSWORD_LOCAL=devpassword
    
    # Production
-   NEO4J_URI_PROD=bolt://YOUR_PROD_IP:7687
-   NEO4J_HTTP_PROD=http://YOUR_PROD_IP:7474
-   NEO4J_PASSWORD_PROD=RETRIEVED_FROM_SECRET_MANAGER
+   NEO4J_URI_PROD=bolt://34.63.143.68:7687
+   NEO4J_HTTP_PROD=http://34.63.143.68:7474
+   NEO4J_PASSWORD_PROD=Neo4jSecure57bd68a3f6a61bce93bd78ce!
    
    # GCP Configuration
    GCP_PROJECT_ID=your-project-id
@@ -229,7 +234,7 @@ All authentication credentials and configuration are managed through environment
    GCP_DEPLOYMENT_NAME=your-deployment-name
    ```
 
-3. **For arrgh-fastapi integration**, use the appropriate environment variables:
+4. **For arrgh-fastapi integration**, use the appropriate environment variables:
    ```python
    # Local development
    NEO4J_URI = os.getenv('NEO4J_URI_LOCAL')
